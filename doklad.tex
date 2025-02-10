@@ -1,0 +1,548 @@
+\documentclass[12pt]{article}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{mathrsfs}
+\usepackage[russian]{babel}
+\voffset=-10mm
+\oddsidemargin=5mm
+\evensidemargin=0mm
+\textheight=235mm
+\textwidth=170mm
+\topmargin=-7.2mm
+\newtheorem{theorem}{\hskip\parindent Теорема}%[section]
+\newtheorem{definition}{\hskip\parindent Определение}%[section]
+\newtheorem{corollary}{\hskip\parindent Следствие}%[section]
+\newtheorem{lemma}{\hskip\parindent Лемма}%[section]
+\newtheorem{remark}{\hskip\parindent Замечание}%[section]
+\newtheorem{example}{\hskip\parindent Пример}%[section]
+\begin{document}
+\section{Введение}
+Решаем задачу бинарной классификации. Здесь часто объекту ставится в соответствие $d$-мерный вектор $x$, но мы будем считать, что $x\in\mathcal{X}$, где $\mathcal{X}$ --- пространство с мерой, $\Sigma\subset 2^{\mathcal{X}}$ --- $\sigma$-алгебра. $y$ --- соответствующая объекту $x$ метка класса, $y\in\{-1,1\}$.
+
+Таким образом, возникает функция $g: \mathcal{X}\to\{-1,1\}$. Функция $g$ называется \textbf{классификатором}. Будем говорить, что классификатор \textbf{ошибается} на объекте $x$, если $g(x)\ne y$.
+
+Применим вероятностный подход: пусть $(X,Y)\in \mathcal{X}\times\{-1,1\}$ --- случайная пара, моделирующая наблюдаемый объект и его метку класса. Её распределение можно описать с помощью распределения $X$ ($\left\{\mathbb{P}\{X\in A\}: A\in\Sigma\right\}$) и \textbf{апостериорной вероятности} $\eta(x):=\mathbb{P}\left\{Y=1| X=x\right\}$.
+
+Будем измерять качество классификатора с помощью вероятности ошибки:
+\begin{equation*}
+	L(g):=\mathbb{P}\left\{g(X)\ne Y\right\}
+\end{equation*}
+
+Рассмотрим классификатор
+\begin{equation*}
+	g^*(x)=\begin{cases}
+		1, \quad \eta(x)>\dfrac{1}{2}\\ \\
+		-1, \quad \eta(x)\leqslant\dfrac{1}{2}
+	\end{cases}
+\end{equation*}
+\begin{theorem}
+	Для любого классификатора $g$ имеем $L(g^*)\leqslant L(g)$.
+\end{theorem}
+
+\textbf{Доказательство}. Будем считать, что $X=x$, тогда 
+\begin{equation*}
+	\mathbb{P}\left\{g(X)\ne Y|X=x\right\}=1-\mathbb{P}\left\{Y=g(X)|X=x\right\}=1-\left(\mathbb{P}\left\{g(X)=1, Y=1|X=x\right\}\right.=
+\end{equation*}
+\begin{equation*}
+	\left.+\mathbb{P}\left\{g(X)=-1, Y=-1|X=x\right\}\right)=1-\left(I_{\left\{g(X)=1\right\}}\cdot\mathbb{P}\{Y=1|X=x\}\right.+
+\end{equation*}
+\begin{equation*}
+	\left.+I_{\left\{g(X)=-1\right\}}\cdot\mathbb{P}\{Y=-1|X=x\}\right)=1-\left[I_{\left\{g(X)=1\right\}}\cdot\eta(x)+I_{\left\{g(X)=-1\right\}}\cdot(1-\eta(x))\right]
+\end{equation*}
+Таким образом,
+\begin{equation*}
+	\mathbb{P}\left\{g(X)\ne Y|X=x\right\}-\mathbb{P}\left\{g^*(X)\ne Y|X=x\right\}=1-\left[I_{\left\{g(X)=1\right\}}\cdot\eta(x)+I_{\left\{g(X)=-1\right\}}\cdot(1-\eta(x))\right]-
+\end{equation*}
+\begin{equation*}
+	-1+\left[I_{\left\{g^*(X)=1\right\}}\cdot\eta(x)+I_{\left\{g^*(X)=-1\right\}}\cdot(1-\eta(x))\right]=\eta(x)\cdot(I_{\{g^*(X)=1\}}-I_{\{g(X)=1\}})+
+\end{equation*}
+\begin{equation*}
+	+(1-\eta(x))\cdot\left(I_{\{g^*(X)=-1\}}-I_{\{g(X)=-1\}}\right)=\eta(x)\cdot(I_{\{g^*(X)=1\}}-I_{\{g(X)=1\}})+
+\end{equation*}
+\begin{equation*}
+	+(1-\eta(x))\cdot(I_{\{g(X)=1\}}-I_{\{g^*(X)=1\}})=(2\eta(x)-1)\cdot(I_{\{g^*(X)=1\}}-I_{\{g(X)=1\}})
+\end{equation*}
+Если $\eta(x)>\dfrac{1}{2}$, то $I_{\{g^*(X)=1\}}=1$, следовательно, вторая скобка неотрицательна, всё произведение неотрицательно. Если $\eta(x)\leqslant\dfrac{1}{2}$, то $I_{\{g^*(X)=1\}}=0$, следовательно, вторая скобка неположительна, всё произведение неотрицательно.
+
+Теорема доказана.
+
+Классификатор $g^*$ называется \textbf{байесовским}, а величина $L^*:=L(g^*)$ называется \textbf{байесовским риском}.
+\section{Минимизация эмпирического риска. Сложность Радемахера}
+Наиболее естественный подход к задаче классификации --- рассмотреть класс $\mathcal{C}$ классификаторов $g:\mathcal{X}\to\{-1,1\}$ и использовать оценки для $L(g)$, основанные на данных.
+
+Пусть дана выборка $D_n=\left\{(X_i,Y_i)\right\}_{i=1}^{n}$. Самый естественный способ оценить $L(g)$:
+\begin{equation*}
+	L_n(g):=\frac{1}{n}\sum\limits_{i=1}^{n}I_{\left\{g(X_i)=Y_i\right\}}
+\end{equation*}
+
+$L_n(g)$ --- \textbf{эмпирическая ошибка} классификатора $g$.
+
+Очертим основы теории минимизации эмпирического риска. Обозначим $g_n^*$ --- классификатор, минимизирующий эмпирическую ошибку, то есть
+\begin{equation*}
+	L_n(g_n^*)\leqslant L_n(g) \quad \forall\, g\in\mathcal{C},
+\end{equation*}
+тогда вероятность ошибки
+\begin{equation*}
+	L(g_n^*)=\mathbb{P}\left\{g_n^*(X)\ne Y| D_n\right\}
+\end{equation*}
+Легко видеть, что
+\begin{equation*}
+	L(g_n^*)-\inf\limits_{g\in\mathcal{C}}L(g)\leqslant2\sup\limits_{g\in\mathcal{C}}|L_n(g)-L(g)|, \quad L(g_n^*)\leqslant L_n(g_n^*)+\sup\limits_{g\in\mathcal{C}}|L_n(g)-L(g)|
+\end{equation*}
+
+Мы видим, что если отклонение $\sup\limits_{g\in\mathcal{C}}|L_n(g)-L(g)|$ невелико, то мы можем сделать вывод, что вероятность ошибки выбранного классификатора не намного превышает вероятность ошибки лучшего классификатора в классе $\mathcal{C}$, и в то же время эмпирическая оценка $L_n(g_n^*)$ тоже хорошая.
+
+Так как $nL_n(g)\sim Bi(n,L(g))$, то следует изучать отклонения биномиальных случайных величин от их математического ожидания. Сформулируем задачу более общо: пусть $X_1$, $dots$, $X_n$ --- i. i. d. случайные величины со значениями в некотором множестве $\mathscr{X}$ и $\mathcal{F}$ --- класс функций $f:\mathscr{X}\to[-1,1]$. Обозначим
+\begin{equation*}
+	Pf:=Ef(X_1), \quad P_nf:=\frac{1}{n}\sum\limits_{i=1}^{n}f(X_i)
+\end{equation*}
+и рассмотрим $\sup\limits_{f\in\mathcal{F}}|Pf-P_nf|$.
+\begin{theorem}[неравенство ограниченных разностей]\label{thBoundedDifferences}
+	Пусть $g:\mathscr{X}^n\to\mathbb{R}$ и существуют $c_1$, $\dots$, $c_n\in\mathbb{R}$ такие, что
+	\begin{equation*}
+		\sup\limits_{x_1,\dots, x_n\in\mathscr{X}, x_i'\in\mathscr{X}}\left|g(x_1,\dots, x_n)-g(x_1,\dots, x_i',\dots, x_n)\right|\leqslant c_i, \quad i=1,\dots, n
+	\end{equation*}
+	и пусть $X_1$, $\dots$, $X_n$ --- i. i. d. случайные величины, тогда случайная величина
+	\begin{equation*}
+		Z=g(X_1,\dots, X_n)
+	\end{equation*}
+	удовлетворяет неравенству
+	\begin{equation*}
+		\mathbb{P}\left\{|Z-\mathbb{E}Z|>t\right\}\leqslant2e^{-\frac{2t^2}{C}}, \quad C=\sum\limits_{i=1}^{n}c_i^2
+	\end{equation*}
+\end{theorem}
+
+Заметим, что случайная величина
+\begin{equation*}
+	Z=\sup\limits_{f\in\mathcal{F}}|Pf-P_nf|
+\end{equation*}
+удовлетворяет условиям теоремы \ref{thBoundedDifferences} с константами $c_i=\dfrac{2}{n}$ и, более того, для любого $\delta\in(0,1)$ с вероятностью $\geqslant1-\delta$:
+\begin{equation*}
+	\sup\limits_{f\in\mathcal{F}}|Pf-P_nf|\leqslant\mathbb{E}\sup\limits_{f\in\mathcal{F}}|Pf-P_nf|+\sqrt{\frac{2\ln\frac{1}{\delta}}{n}}
+\end{equation*}
+
+Последнее неравенство позволяет сконцентрироваться на математическом ожидании, которое можно оценить сверху с помощью сииметризации. Обозначим $X_1'$, $\dots$, $X_n'$ --- призрачная выборка, состоящая из независимых случайных величин, которые также являеются независимыми с $X_i$,
+\begin{equation*}
+P_n'f:=\frac{1}{n}\sum\limits_{i=1}^{n}f(X_i'),
+\end{equation*}
+тогда по неравенству Йенсена
+\begin{equation*}
+\mathbb{E}\sup\limits_{f\in\mathcal{F}}|Pf-P_nf|\leqslant\mathbb{E}\sup\limits_{f\in\mathcal{F}}\left(\mathbb{E}\left[|P_n'f-P_nf|\bigg| X_1,\dots, X_n\right]\right)\leqslant\mathbb{E}\sup\limits_{f\in\mathcal{F}}|P_n'f-P_nf|
+\end{equation*}
+Обозначим $\sigma_1$, $\dots$, $\sigma_n$ --- независимые случайные величины Радемахера, $\mathbb{P}\left\{\sigma_i=-1\right\}=\mathbb{P}\left\{\sigma_i=1\right\}=\dfrac{1}{2}$, тогда
+\begin{equation*}
+\mathbb{E}\sup\limits_{f\in\mathcal{F}}|P_n'f-P_nf|=\mathbb{E}\left[\sup\limits_{f\in\mathcal{F}}\left|\frac{1}{n}\sum\limits_{i=1}^{n}(f(X_i')-f(X_i))\right|\right]=\mathbb{E}\left[\sup\limits_{f\in\mathcal{F}}\left|\frac{1}{n}\sum\limits_{i=1}^{n}\sigma_i(f(X_i')-f(X_i))\right|\right]\leqslant
+\end{equation*}
+\begin{equation*}
+\leqslant2\mathbb{E}\left[\sup\limits_{f\in\mathcal{F}}\frac{1}{n}\left|\sum\limits_{i=1}^{n}\sigma_if(X_i)\right|\right]
+\end{equation*}
+
+Пусть $A\subset\mathbb{R}^n$ --- ограниченное, $a=(a_1,\dots, a_n)\in A$. \textbf{Сложность Радемахера} по множеству $A$:
+\begin{equation*}
+R_n(A):=\mathbb{E}\sup\limits_{a\in A}\frac{1}{n}\left|\sum\limits_{i=1}^{n}\sigma_ia_i\right|
+\end{equation*}
+
+Для заданного набора точек $x_1$, $\dots$, $x_n\in\mathcal{X}$ обозначим
+\begin{equation*}
+\mathcal{F}(x_1^n)=\left\{(f(x_1),\dots, f(x_n)): f\in\mathcal{F}\right\}
+\end{equation*}
+\begin{theorem}
+Для любого $\delta\in(0,1)$ с вероятностью $\geqslant1-\delta$
+\begin{equation*}
+	\sup\limits_{f\in\mathcal{F}}|Pf-P_nf|\leqslant2\mathbb{E}R_n(\mathcal{F}(x_1^n))+\sqrt{\frac{2\ln\frac{1}{\delta}}{n}}
+\end{equation*}
+Также с вероятностью $\geqslant1-\delta$
+\begin{equation}\label{eqFirstDataBasedEstimate}
+\sup\limits_{f\in\mathcal{F}}|Pf-P_nf|\leqslant2R_n(\mathcal{F}(x_1^n))+\sqrt{\frac{2\ln\frac{2}{\delta}}{n}}
+\end{equation}
+\end{theorem}
+Второе неравенство вытекает из того факта, что случайная величина $R_n(\mathcal{F}(x_1^n))$ удовлетворяет теореме $\ref{thBoundedDifferences}$. Также это неравенство является нашей первой оценкой, основанной на данных.
+
+Смысл сложности Радемахера в том, что она показывает, насколько богат класс $\mathcal{F}$, а именно: она велика, если в $\mathcal{F}$ содержатся функции, принимающие большие значения с заданными знаками на любом наборе данных фиксированного размера.
+
+Введена Владимиром Кольчинским и Дмитрием Панченко в 1999 году.
+\begin{theorem}[Свойства средних Радемахера]\label{thProperties}
+Пусть $A$, $B\subset\mathbb{R}^n$ --- ограниченные, $c\in\mathbb{R}$, тогда
+\begin{enumerate}
+	\item\label{eqProperty1}
+	\begin{equation*}
+		R_n(A\cup B)\leqslant R_n(A)+R_n(B)
+	\end{equation*}
+	\item\label{eqProperty2}
+	\begin{equation*}
+		R_n(c\cdot A)\leqslant|c|\cdot R_n(A)
+	\end{equation*}
+	\item\label{eqProperty3}
+	\begin{equation*}
+		R_n(A+B)\leqslant R_n(A)+R_n(B)
+	\end{equation*}
+\item\label{eqProperty4}
+Если $A=\left\{a^{(1)},\dots, a^{(N)}\right\}$ --- конечно, то
+\begin{equation*}
+	R_n(A)\leqslant\max\limits_{1\leqslant j\leqslant N}\|a^{(j)}\|\cdot\frac{\sqrt{2\ln N}}{n},
+\end{equation*}
+$\|\cdot\|$ --- евклидова норма.
+\item\label{eqProperty5}
+Пусть $\varphi:\mathbb{R}\to\mathbb{R}$ --- липшицева с константой $L_\varphi$, $\varphi(0)=0$, обозначим
+\begin{equation*}
+	\varphi\circ A=\left\{(\varphi(a_1), \dots,\varphi(a_n)): a=(a_1,\dots, a_n)\in A\right\},
+\end{equation*}
+тогда 
+\begin{equation*}
+	R_n(\varphi\circ A)\leqslant L_\varphi\cdot R_n(A)
+\end{equation*}
+\item\label{eqProperty6}
+Если
+\begin{equation*}
+	\operatorname{absconv}A=\left\{\sum\limits_{j=1}^{N}c_ja_j: N\in\mathbb{N}, c_j\in\mathbb{R}, \sum\limits_{j=1}^{N}|c_j|\leqslant1, a_j\in A\right\},
+\end{equation*}
+то $R_n(\operatorname{absconv}A)=R_n(A)$.
+\end{enumerate}
+\end{theorem}
+
+\textbf{Доказательство свойства \eqref{eqProperty4}}.  Вытекает из неравенства Хёфдинга, которое утверждает, что если ограниченная случайная величина $\xi$ имеет нулевое математическое ожидание и принимает значения на $[\alpha,\beta]$, то для любого $s>0$
+\begin{equation*}
+	\mathbb{E}e^{s\xi}\leqslant e^{\frac{s^2\cdot(\beta-\alpha)^2}{8}}
+\end{equation*}
+Имеем
+\begin{equation*}
+	\mathbb{E}e^{\frac{s}{n}\sum\limits_{i=1}^{n}\sigma_ia_i}=\prod\limits_{i=1}^{n}\mathbb{E}e^{\frac{s}{n}\cdot\sigma_ia_i}\leqslant\prod\limits_{i=1}^{n}e^{\frac{s^2\cdot a_i^2}{2n^2}}=e^{\frac{s^2\cdot\|a\|^2}{2n^2}}
+\end{equation*}
+Отсюда вытекает, что
+\begin{equation*}
+	e^{s\cdot R_n(A)}=\exp\left[s\cdot\mathbb{E}\max\limits_{1\leqslant j\leqslant N}\frac{1}{n}\left|\sum\limits_{i=1}^{n}\sigma_ia_i^{(j)}\right|\right]\leqslant\mathbb{E} \exp\left[s\cdot\max\limits_{1\leqslant j\leqslant N}\frac{1}{n}\left|\sum\limits_{i=1}^{n}\sigma_ia_i^{(j)}\right|\right]\leqslant
+\end{equation*}
+\begin{equation*}
+	\leqslant\sum\limits_{j=1}^{N}\mathbb{E}e^{\frac{s}{n}\cdot\sum\limits_{i=1}^{n}\sigma_ia_i^{(j)}}\leqslant N\cdot\max\limits_{1\leqslant j\leqslant N} e^{\frac{s^2\cdot\|a^{(j)}\|^2}{2n^2}}
+\end{equation*}
+\begin{equation*}
+	e^{s\cdot R_n(A)}\leqslant N\cdot\max\limits_{1\leqslant j\leqslant N} e^{\frac{s^2\cdot\|a^{(j)}\|^2}{2n^2}}
+\end{equation*}
+\begin{equation*}
+	s\cdot R_n(A)\leqslant \ln N\cdot\max\limits_{1\leqslant j\leqslant N}\frac{s^2\cdot\|a^{(j)}\|^2}{2n^2}
+\end{equation*}
+\begin{equation*}
+	R_n(A)\leqslant\frac{s\ln N}{2n^2}\cdot\max\limits_{1\leqslant j\leqslant N}\|a^{(j)}\|^2
+\end{equation*}
+Рассмотрим случай, когда класс $\mathcal{F}$ состоит только из функций-индикаторов. Тогда для любого набора точек $x_1^n=(x_1,\dots,x_n)$ множество $\mathcal{F}(x_1^n)$ конечно, его мощность $\mathbb{S}_{\mathcal{F}}(x_1^n)\leqslant2^n$ и по свойству $\eqref{eqProperty4}$
+\begin{equation}\label{eqRademacherVCInequality}
+	R_n(\mathcal{F}(x_1^n))\leqslant\sqrt{\frac{2\ln\mathbb{S}_{\mathcal{F}}(x_1^n)}{n}},
+\end{equation}
+В частности,
+\begin{equation*}
+	\mathbb{E}\sup\limits_{f\in\mathcal{F}}|Pf-P_nf|\leqslant2\mathbb{E}\sqrt{\frac{2\ln\mathbb{S}_{\mathcal{F}}(x_1^n)}{n}}
+\end{equation*}
+Величина $\mathbb{S}_{\mathcal{F}}(x_1^n)$ называется \textbf{коэффициентом разбиения Вапника-Червоненкиса}, а её логарифм называется \textbf{размерностью Вапника-Червоненкиса}.
+
+Если $A\subset\{-1,1\}^n$, то размерность Вапника-Червоненкиса --- это размер $V$ наибольшего множества индексов $\{i_1,\dots, i_V\}\subset\{1,\dots,n\}$ такого, что для любого вектора $b\in\{-1,1\}^n$ найдётся вектор $a=(a_1,\dots, a_n)\in A$ такой, что $(a_{i_1}, \dots, a_{i_V})=b$.
+
+Иными словами, VC-размерность класса $\mathcal{F}$ --- это наибольшее число $h$ такое, что найдётся подмножество мощности $h$ такое, что функции из $\mathcal{F}$ смогут разбить его на два класса всеми возможными способами.
+
+Связь между VC-коэффициентом разбиения и VC-размерностью устанавливает лемма Сауэра, которая утверждает, что если $A\subset\{-1,1\}^n$, то
+\begin{equation*}
+	|A|\leqslant\sum\limits_{i=0}^{V}C_n^i\leqslant(n+1)^V,
+\end{equation*}
+где $V$ --- VC-размерность $A$. В частности,
+\begin{equation*}
+	\ln\mathbb{S}_{\mathcal{F}}(x_1^n)\leqslant V(x_1^n)\cdot\ln(n+1),
+\end{equation*}
+где $V(x_1^n)$ --- VC-размерность $\mathcal{F}(x_1^n)$. Поэтому
+\begin{equation*}
+	\mathbb{E}\sup\limits_{f\in\mathcal{F}}|Pf-P_nf|\leqslant2\mathbb{E}\sqrt{\frac{2V(X_1^n)\cdot\ln(n+1)}{n}}
+\end{equation*}
+
+Чтобы получить оценку, не зависящую от распределения, введём VC-размерность класса бинарных функций $\mathcal{F}$:
+\begin{equation*}
+	V=\sup\limits_{n,x_1^n}V(x_1^n)
+\end{equation*}
+\begin{theorem}[неравенство Вапника-Червоненкиса]
+	Для любого распределения выполняется неравенство
+	\begin{equation*}
+		\mathbb{E}\sup\limits_{f\in\mathcal{F}}|Pf-P_nf|\leqslant2\sqrt{\frac{2V\cdot\ln(n+1)}{n}}
+	\end{equation*}
+	Также существует $C>0$, что
+	\begin{equation*}
+		\mathbb{E}\sup\limits_{f\in\mathcal{F}}|Pf-P_nf|\leqslant C\cdot\sqrt{\frac{V}{n}}
+	\end{equation*}
+\end{theorem}
+\section{Минимизация функций штрафа}
+Показано, что минимизация эмпирического риска $L_n(g)$ в классе $\mathcal{C}$ классификаторов с VC-размерностью, намного меньшей, чем размер выборки $n$, гарантированно будет работать хорошо. Но здесь возникают две проблемы:
+\begin{enumerate}
+	\item Если потребовать, чтобы VC-размерность была малой, то накладываются серьезные ограничения на аппроксимационные свойства класса. В частности, несмотря на то, что величина  $|L(g_n)-\inf\limits_{g\in\mathcal{C}}L(g)|$ может быть маленькой, величина $\inf\limits_{g\in\mathcal{C}}L(g)-L^*$ может быть очень большой. 
+	\item Минимизация эмпирической вероятности $L(g)$ очень часто является вычислительно сложной задачей.
+\end{enumerate}
+Рассмотрим детальнее вторую проблему для случая полупространств. Пусть дана выборка $(x_1,\dots, x_n)$ из $\mathbb{R}^d$ и пусть дан набор меток $(y_1,\dots, y_n)\in\{-1,1\}^n$. Чтобы минимизировать эмпирический риск мисклассификации, необходимо найти $w\in\mathbb{R}^d$ и $b\in\mathbb{R}$ такие, что
+\begin{equation*}
+	\left|\left\{k:y_k\cdot(\langle w,x_k\rangle-b) \leqslant0\right\}\right|\to\min
+\end{equation*}
+Предположим, не ограничивая общности, что векторы имеют рациональные координаты, и что размер данных это сумма битовых длин векторов, образующих выборку, тогда не только минимизация, но и приближённая минимизация количества ошибок имеет сложность NP. Если P=NP, то мы не сможем построить вычислительно эффективный алгоритм, который будет работать хорошо для любой размерности $d$. Если $d$ зафиксировано, то алгоритм работает за $O(n^{d-1}\ln n)$
+\subsection{Margin}
+Попытка решить обе эти проблемы состоит в модификации эмпирического функционала, подлежащего минимизации, путем введения \textbf{функции штрафа}. Рассмотрим классификаторы вида
+\begin{equation*}
+	g_f(x)=\begin{cases}
+		1, \quad f(x)\geqslant0\\
+		-1, \quad f(x)<0
+	\end{cases}
+	, \quad f:\mathcal{X}\to\mathbb{R},
+\end{equation*}
+тогда
+\begin{equation*}
+	L(g_f)=\mathbb{E}I_{f(X)Y<0}
+\end{equation*}
+Для простоты будем писать $L(f)=L(g_f)$.
+
+Пусть $\varphi: \mathbb{R}\to\mathbb{R}_+$ --- неотрицательная функция стоимости такая, что $\varphi(x)\geqslant I_{\{x\geqslant0\}}$ (самые популярные примеры: $\varphi(x)=e^x$, $\varphi(x)=\log_2(1+e^x)$, $\varphi(x)=(1+x)_+$).
+
+Введём \textbf{функционал стоимости} и его эмпирическую версию
+\begin{equation*}
+	A(f):=\mathbb{E}\varphi(-f(X)Y), \quad A_n(f):=\frac{1}{n}\sum\limits_{i=1}^{n}\varphi(-f(X_i)Y_i),
+\end{equation*}
+очевидно, что $L(f)\leqslant A(f)$, $L_n(f)\leqslant A_n(f)$.
+\begin{theorem}
+	Пусть функция $f_n$ выбрана из класса $\mathcal{F}$, сформированного по данным
+	
+	\noindent $\left\{(X_i,Y_i)\right\}_{i=1}^{n}$, $B$ --- верхняя оценка для $\varphi(-f(x)y)$ и $L_\varphi$ --- липшицева константа функции $\varphi$. Тогда для любого $\delta\in(0,1)$ с вероятностью $\geqslant1-\delta$ выполняется неравенство
+	\begin{equation*}
+		L(f_n)\leqslant A_n(f_n)+L_\varphi\cdot\mathbb{E}R_n(\mathcal{F}(X_1^n))+B\cdot\sqrt{\frac{2\ln\frac{1}{\delta}}{n}}
+	\end{equation*}
+	Таким образом, сложность Радемахера класса вещественнозначных функций ограничивает качество классификатора.
+\end{theorem}
+
+\textbf{Доказательство}. Обозначим $\mathcal{H}$ --- класс функций $\mathcal{X}\times\{-1,1\}\to\mathbb{R}$ вида $-f(x)y$, где $f\in\mathcal{F}$, тогда учитывая свойство $\eqref{eqProperty5}$ теоремы $\ref{thProperties}$, имеем
+\begin{equation*}
+	L(f_n)\leqslant A(f_n)\leqslant A_n(f_n)+\sup\limits_{f\in\mathcal{F}}(A(f_n)-A_n(f_n))\leqslant A(f_n)+\mathbb{E}R_n(\varphi\circ\mathcal{H}(Z_1^n))+B\cdot\sqrt{\frac{2\ln\frac{1}{\delta}}{n}}\leqslant
+\end{equation*}
+\begin{equation*}
+	\leqslant A(f_n)+L_\varphi\cdot\mathbb{E}R_n(\mathcal{H}(Z_1^n))+B\cdot\sqrt{\frac{2\ln\frac{1}{\delta}}{n}}\leqslant A(f_n)+L_\varphi\cdot\mathbb{E}R_n(\mathcal{F}(X_1^n))+B\cdot\sqrt{\frac{2\ln\frac{1}{\delta}}{n}}
+\end{equation*}
+Теорема доказана.
+\subsection{Взвешенные схемы голосования}
+В таких приложениях, как бустинг и бэггинг, классификаторы объединяются схемами взвешенного голосования, что означает, что правило классификации получается с помощью функций $f$ из класса
+\begin{equation}\label{eqWeightedClasses}
+	\mathcal{F}_\lambda=\left\{f(x)=\sum\limits_{j=1}^{N}c_jg_j(x): N\in\mathbb{N}, c_j\in\mathbb{R}, \sum\limits_{j=1}^{N}|c_j|\leqslant\lambda, g_j\in\mathcal{C}\right\},
+\end{equation}
+где $\mathcal{C}$ --- класс \textbf{основных} классификаторов, то есть функций $g:\mathcal{X}\to\{-1,1\}$. Классификатор такого вида можно рассматривать как классификатор, который при наблюдении $x$ принимает решение на основании взвешенного голосования классификаторов $g_1$, $\dots$, $g_N$, используя
+веса $c_1$, $\dots$, $c_N$, и принимает решения согласно взвешенному большинству.
+
+В этой случае, учитывая $\eqref{eqProperty6}$ и $\eqref{eqRademacherVCInequality}$, имеем
+\begin{equation*}
+	R_n(\mathcal{F}_\lambda(X_1^n))\leqslant\lambda\cdot R_n(\mathcal{C}(X_1^n))\leqslant\lambda\cdot\sqrt{\frac{2V_\mathcal{C}\cdot\ln(n+1)}{n}},
+\end{equation*}
+где $V_\mathcal{C}$ --- VC-размерность основного класса $\mathcal{C}$.
+
+Чтобы понять богатство классов, образованных средневзвешенными классификаторами основного класса, просто рассмотрим простой одномерный пример, в котором основной класс $\mathcal{C}$ имеет вид
+\begin{equation*}
+	\mathcal{C}=\left\{2I_{\{x\geqslant a\}}-1: a\in\mathbb{R}\right\},
+\end{equation*}
+тогда $V_\mathcal{C}=1$ и замыкание $\mathcal{F}_\lambda$ по норме $L^\infty$ есть множество всех функций с полной вариацией $\leqslant2\lambda$. Поэтому $\mathcal{F}_\lambda$ богат в том смысле, что любой классификатор может быть приближен классификаторами, связанными с функциями из $\mathcal{F}_\lambda$. В частности, VC-размерность класса всех классификаторов, индуцированных функциями из $\mathcal{F}_\lambda$, бесконечна.
+
+Подводя итог, мы получили, что если $F_\lambda$ имеет указанный выше вид, то для любой выбранной функции $f_n$
+из $F_\lambda$ на основе данных, вероятность ошибки соответствующего классификатора удовлетворяет с вероятностью $\geqslant1-\delta$ неравенству
+\begin{equation*}
+	L(f_n)\leqslant A_n(f_n)+L_\varphi\cdot\lambda\sqrt{\frac{2V_\mathcal{C}\cdot\ln(n+1)}{n}}+B\cdot\sqrt{\frac{2\ln\frac{1}{\delta}}{n}}
+\end{equation*}
+Примечательным фактом этого неравенства является то, что верхняя оценка включает только VC-размерность класса $\mathcal{C}$ базовых классификаторов, которая обычно невелика. Цена, которую мы платим, заключается в том, что первый член в правой части представляет собой эмпирический функционал штрафа, а не эмпирическую вероятность ошибки.
+
+Рассмотрим следующий пример: $\gamma>0$ --- параметр и
+\begin{equation*}
+	\varphi(x)=\begin{cases}
+		0, \quad x<-\gamma\\ \\
+		1+\dfrac{x}{\gamma}, \quad -\gamma\leqslant x\leqslant0\\ \\
+		1, \quad x>0
+	\end{cases}
+\end{equation*}
+В этом случае $B=1$, $L_\varphi=\dfrac{1}{\gamma}$. Также заметим, что $I_{\{x\geqslant0\}}\leqslant\varphi(x)\leqslant I_{\{x\geqslant-\gamma\}}$, и поэтому $A_n(f)\leqslant L_n^\gamma(f)$, где $L_n^\gamma(f)$ --- \textbf{ошибка с отступом}:
+\begin{equation*}
+	L_n^\gamma(f):=\frac{1}{n}\sum\limits_{i=1}^{n}I_{\{f(X_i)Y_i<=\gamma\}}
+\end{equation*}
+Заметим, что для любого $\gamma>0$ $L_n(f)\leqslant L_n^\gamma(f)$, а также $L_n^\gamma(f)$ возрастает по $\gamma$.
+
+Интерпретация ошибки с отступом заключается в том, заключается в том, что она учитывает, помимо количества ошибочно классифицированных пар, также те, которые хорошо классифицированы, но лишь с небольшой <<достоверностью>>.
+
+\begin{corollary}
+	Для любых $\gamma>0$ и $\delta\in(0,1)$ с вероятностью $\geqslant1-\delta$
+	\begin{equation*}
+		L(f_n)\leqslant L_n^\gamma(f_n)+\frac{2\lambda}{\gamma}\cdot\sqrt{\frac{2V_\mathcal{C}\cdot\ln(n+1)}{n}}+\sqrt{\frac{2\ln\frac{1}{\delta}}{n}}
+	\end{equation*}
+\end{corollary}
+\subsection{Ядерные методы}
+Ещё один популярный способ получить правила классификации из класса вещественнозначных функций, используемый в <<ядерных>> методах таких, как SVM и ядерный дискриминантный анализ Фишера: рассмотреть шары в воспроизводящем гильбертовом пространстве.
+
+Основная идея: использовать положительно определённое ядро $k:\mathcal{X}\times\mathcal{X}\to\mathbb{R}$, удовлетворяющее двум условиям:
+\begin{enumerate}
+	\item Для любых $x$, $y\in\mathcal{X}$
+	\begin{equation*}
+		k(x,y)=k(y,x)
+	\end{equation*}
+	\item Для любых $n\in\mathbb{N}$, $c_1$, $\dots$, $c_n\in\mathbb{R}$, $x_1$, $\dots$, $x_n\in\mathcal{X}$
+	\begin{equation*}
+		\sum\limits_{i,j=1}^{n}c_ic_j\cdot k(x_i,x_j)\geqslant0
+	\end{equation*} 
+\end{enumerate}
+
+Функция $K$ генерирует пространство функций
+\begin{equation*}
+	\mathcal{F}=\left\{f(y)=\sum\limits_{i=1}^{n}\alpha_i\cdot k(x_i,y): n\in\mathbb{N}, \alpha_i\in\mathbb{R}, x_i\in\mathcal{X}\right\},
+\end{equation*}
+которое с помощью скалярного произведения
+\begin{equation*}
+	\langle\sum\limits_{i=1}^{n}\alpha_ik(x_i,y),\sum\limits_{j=1}^{m}\beta_jk(x_j,y)\rangle:=\sum\limits_{i=1}^{n}\sum\limits_{j=1}^{m}\alpha_i\beta_j\cdot k(x_i,x_j)
+\end{equation*}
+может быть дополнено до гильбертова пространства.
+
+Ключевое свойство заключается в том, что для любых $x_1$, $x_2\in\mathcal{X}$ существуют $f_{x_1}$, $f_{x_2}\in\mathcal{X}$ такие, что $\langle f_{x_1},f_{x_2}\rangle=k(x_1,x_2)$. Это означает, что любой линейный алгоритм, использующий скалярное произведение, можен быть расширен до нелинейного алгоритма с помощью замены скалярного произведения на ядро. Преимущество состоит в том, что, несмотря на низкую сложность алгоритма, он работает в классе функций, которые потенциально могут сколь угодно хорошо представлять любую непрерывную функцию (при условии, что k выбрано соответствующим образом).
+
+Алгоритмы, работающие с ядрами, обычно выполняют минимизацию функционала стоимости на шаре соответствующего воспроизводящего ядра гильбертова пространства вида
+\begin{equation*}
+	\mathcal{F}_\lambda=\left\{f(x)=\sum\limits_{j=1}^{N}c_jk(x_j,x): N\in\mathbb{N}, c_j\in\mathbb{R}, \sum\limits_{i,j=1}^{N}c_ic_jk(x_i,x_k)\leqslant\lambda^2, x_j\in\mathcal{C}\right\},
+\end{equation*}
+
+
+Важным свойством функций в воспроизводящем ядерном гильбертовом пространстве, связанном с $k$, является то, что для всех $x\in\mathcal{X}$
+\begin{equation*}
+	f(x)=\langle f(y),k(x,y)\rangle
+\end{equation*}
+Это свойство называется \textbf{воспроизводящим}. Оно может быть использовано для того, чтобы точно оценить сложность Радемахера класс $\mathcal{F}_\lambda$:
+\begin{equation*}
+	R_n(\mathcal{F}_\lambda(X_1^n))=\frac{1}{n}\cdot\mathbb{E}\sup\limits_{\|f\|\leqslant\lambda}\sum\limits_{i=1}^{n}\sigma_if(X_i)=\frac{1}{n}\cdot\mathbb{E}\sup\limits_{\|f\|\leqslant\lambda}\sum\limits_{i=1}^{n}\sigma_i\cdot\langle f(y),k(X_i,y)\rangle=
+\end{equation*}
+\begin{equation*}
+	=\frac{\lambda}{n}\cdot\mathbb{E}\left\|\sum\limits_{i=1}^{n}\sigma_ik(X_i,y)\right\|
+\end{equation*}
+Здесь $\|\cdot\|$ --- норма в воспроизводящем гильбертовом пространстве, в последнем равенстве мы использовали неравенство Коши-Буняковского.
+
+Неравенство Хинчина-Кахана: для любых векторов $a_1$, $\dots$, $a_n$ в гильбертовом пространстве
+\begin{equation*}
+	\frac{1}{\sqrt{2}}\cdot\mathbb{E}\left\|\sum\limits_{i=1}^{n}\sigma_ia_i\right\|^2\leqslant\left(\mathbb{E}\left\|\sum\limits_{i=1}^{n}\sigma_ia_i\right\|\right)^2\leqslant\mathbb{E}\left\|\sum\limits_{i=1}^{n}\sigma_ia_i\right\|^2
+\end{equation*}
+Также заметим, что
+\begin{equation*}
+	\mathbb{E}\left\|\sum\limits_{i=1}^{n}\sigma_ia_i\right\|^2=\mathbb{E}\sum\limits_{i,j=1}^{n}\sigma_i\sigma_j\cdot\langle a_i,a_j\rangle=\sum\limits_{i=1}^{n}\|a_i\|^2
+\end{equation*}
+Таким образом,
+\begin{equation*}
+	\frac{\lambda}{n\sqrt{2}}\cdot\sqrt{\sum\limits_{i=1}^{n}k(X_i,X_i)}\leqslant R_n(\mathcal{F}_\lambda(X_1^n))\leqslant\frac{\lambda}{n}\cdot\sqrt{\sum\limits_{i=1}^{n}k(X_i,X_i)}
+\end{equation*}
+\begin{corollary}
+	Пусть $f_n\in\mathcal{F}_\lambda$ --- произвольная функция, тогда для любого $\delta\in(0,1)$ с вероятностью $\geqslant1-\delta$ выполняется неравенство
+	\begin{equation*}
+		L(f_n)\leqslant L_n^\gamma(f_n)+\frac{2\lambda}{\gamma n}\cdot\sqrt{\sum\limits_{i=1}^{n}k(X_i,X_i)}+\sqrt{\frac{2\ln\frac{2}{\delta}}{n}}
+	\end{equation*}
+\end{corollary}
+\section{Выпуклые функционалы штрафа}
+Теперь покажем, что надлежащий выбор функции $\varphi$ имеет свои преимущества. Для этого будем рассматривать неотрицательные неубывающие выпуклые функции $\varphi$ такие, что $\lim\limits_{x\to-\infty}\varphi(x)=0$, $\varphi(0)=1$. Типичные примеры: $\varphi(x)=e^x$ (используется в ADABOOST и связанных с ним алгоритмами бустинга), $\varphi(x)=\log_2(1+e^x)$ (используется в логистической регрессии), $\varphi(x)=(1+x)_+$ (мягкий отступ, используется в SVM). Одно из главных преимуществ использования выпуклых функций штрафа заключается в том, что минимизация $A_n(f)$ часто становится задачей выпуклой оптимизации и поэтому становится вычислительно возможной. На самом деле, большинство классификаторов бустинга и SVM могут быть рассмотрены как эмпирические минимизаторы выпуклого функционала штрафа.
+
+Однако, минимизация выпуклого функционала штрафа имеет дополнительные теоретические преимущества. Предположим в добавок, что функция $\varphi$ строго выпукла и дфференцируема, тогда несложно построить функцию $f^*$, минимизирующщую функционал штрафа
+\begin{equation*}
+	A(f)=\mathbb{E}(\varphi(-f(X)Y))
+\end{equation*}
+Отметим, что для любого $x\in\mathcal{X}$
+\begin{equation*}
+	\mathbb{E}[\varphi(-f(X)Y)| X=x]=\eta(x)\cdot\varphi(-f(x))+(1-\eta(x))\cdot\varphi(f(x))
+\end{equation*}
+и поэтому 
+\begin{equation*}
+	f^*=\operatorname{argmin}\limits_{\alpha}h_{\eta(x)}(\alpha), \quad h_\eta(\alpha):=(1-\eta)\cdot\varphi(-\alpha)+\eta\cdot\varphi(\alpha)
+\end{equation*}
+Отметим, что $h_{\eta}$ строго выпукла, и поэтому $f^*$ корректно определена (хотя она может улетать в $\infty$ при $\eta=0,1$). Предполагая, что $h_\eta$ дифференцируема, делаем вывод, что минимум функции достигается в точке, в которой производная равна нулю, то есть
+\begin{equation*}
+	\frac{\eta}{1-\eta}=\frac{\varphi'(\alpha)}{\varphi'(-\alpha)}
+\end{equation*}
+
+Так как $\varphi'$ строго возрастает, то решение последнего уравнение положительно тогда и только тогда, когда $\eta>\dfrac{1}{2}$. Это означает, что функция $f^*$, минимизирующая функционал $A(f)$ такова, что соответствующий классификатор
+\begin{equation*}
+	g^*(x)=2I_{\{f^*(x)\geqslant0\}}-1
+\end{equation*}
+является байесовским. Поэтому минимизация выпуклого функционала штрафа ведёт нас к оптимальному классификатору.
+
+Для $\varphi(x)=e^x$ $f^*(x)=\dfrac{1}{2}\cdot\ln\dfrac{\eta(x)}{1-\eta(x)}$; для $\varphi(x)=\log_2(1+e^x)$ $f^*(x)=\ln\dfrac{\eta(x)}{1-\eta(x)}$.
+
+Функция $\varphi(x)=(1+x)_+$ не является строго выпуклой, однако легко видеть, что функционал штрафа минимизирует функция
+\begin{equation*}
+	f^*(x)=\begin{cases}
+		1, \quad \eta(x)>\dfrac{1}{2}\\ \\
+		-1, \quad \eta(x)<\dfrac{1}{2}
+	\end{cases}
+\end{equation*}
+В этом случае функция $f^*$ не только порождает байесовский классификатор, но и совпадает с ним.
+\begin{theorem}[Избыточный риск выпуклого минимизатора риска]
+	Пусть $f_n$ выбран из $\mathcal{F}_\lambda$, где $\mathcal{F}_\lambda$ определён в $\eqref{eqWeightedClasses}$, путём минимизации эмпирического функционала штрафа $A_n(f)$ с использованием экспоненциальной либо логистической функции штрафа. Тогда для любого $\delta\in(0,1)$ с вероятностью $\geqslant1-\delta$ выполняется неравенство
+	\begin{equation*}
+		L(f_n)-L^*\leqslant2\cdot\left(2L_\varphi\lambda\cdot\sqrt{\frac{2V_\mathcal{C}\cdot\ln(n+1)}{n}}+B\cdot\sqrt{\frac{2\ln\frac{1}{\delta}}{n}}\right)^{\frac{1}{2}}+\sqrt{2}\cdot\left(\inf\limits_{f\in\mathcal{F}_\lambda}A(f)-A^*\right)^{\frac{1}{2}}
+	\end{equation*}
+\end{theorem}
+
+\textbf{Доказательство}.
+\begin{equation*}
+	L(f_n)-L^*\leqslant\sqrt{2}\cdot\left(A(f_n)-A^*\right)^{\frac{1}{2}}\leqslant\sqrt{2}\cdot\left(A(f_n)-\inf\limits_{f\in\mathcal{F}_\lambda}A(f)\right)^{\frac{1}{2}}+\sqrt{2}\cdot\left(\inf\limits_{f\in\mathcal{F}_\lambda}A(f)-A^*\right)^{\frac{1}{2}}\leqslant
+\end{equation*}
+\begin{equation*}
+	\leqslant2\cdot\left(\sup\limits_{f\in\mathcal{F}_\lambda}|A(f)-A_n(f)|\right)^{\frac{1}{2}}+\sqrt{2}\cdot\left(\inf\limits_{f\in\mathcal{F}_\lambda}A(f)-A^*\right)^{\frac{1}{2}}\leqslant
+\end{equation*}
+\begin{equation*}
+	\leqslant2\cdot\left(2L_\varphi\lambda\cdot\sqrt{\frac{2V_\mathcal{C}\cdot\ln(n+1)}{n}}+B\cdot\sqrt{\frac{2\ln\frac{1}{\delta}}{n}}\right)^{\frac{1}{2}}+\sqrt{2}\cdot\left(\inf\limits_{f\in\mathcal{F}_\lambda}A(f)-A^*\right)^{\frac{1}{2}}
+\end{equation*}
+с вероятностью $\geqslant1-\delta$.
+\section{Общие неравенства}
+Далее мы используем описанное выше явление, чтобы получить более точные оценки качества для минимизации эмпирического риска. Заметим, что если рассматривать разность $Pf-P_nf$ равномерно по классу $\mathcal{F}$, то наибольшие отклонения
+достигаются на функциях, имеющих большую дисперсию (то есть математическое ожидание как можно ближе к $0.5$). Идея заключается в том, чтобы масштабировать каждую функцию, разделив на $\sqrt{Pf}$, чтобы они себя вели похожим образом. Поэтому будем оценивать величину
+\begin{equation*}
+	\sup\limits_{f\in\mathcal{F}}\frac{Pf-P_nf}{\sqrt{Pf}}
+\end{equation*}
+
+Для начала симметризуем остаточные вероятности. Если $nt^2\geqslant2$, то
+\begin{equation*}
+	\mathbb{P}\left\{\sup\limits_{f\in\mathcal{F}}\frac{Pf-P_nf}{\sqrt{Pf}}\geqslant t\right\}\leqslant2\mathbb{P}\left\{\sup\limits_{f\in\mathcal{F}}\frac{P_n'f-P_nf}{\sqrt{\frac{P_n'f+P_nf}{2}}}\geqslant t\right\}
+\end{equation*}
+
+Далее, используя случайные величины Радемахера, имеем
+\begin{equation*}
+	2\mathbb{P}\left\{\sup\limits_{f\in\mathcal{F}}\frac{P_n'f-P_nf}{\sqrt{\frac{P_n'f+P_nf}{2}}}\geqslant t\right\}=2\mathbb{E}\left[\mathbb{P}_\sigma\left\{\sup\limits_{f\in\mathcal{F}}\frac{\frac{1}{n}\sum\limits_{i=1}^{n}\sigma_i\cdot(f(X_i')-f(X_i))}{\sqrt{\frac{P_n'f+P_nf}{2}}}\geqslant t\right\}\right],
+\end{equation*}
+где $\mathbb{P}_\sigma$ --- условная вероятность при заданных $X_i$ и $X_i'$. Наконец, используем остаточные оценки и рассмотрим $\mathcal{F}(X_1^{2n})$, где $X_1^{2n}$ --- конкатенация $X_i$ и $X_i'$.
+\begin{theorem}\label{thScaledEstimate}
+	Пусть $\mathcal{F}$ --- класс функций, принимающих значения в $\{0,1\}$, тогда для любых $f\in\mathcal{F}$ и $\delta\in(0,1)$ с вероятностью $\geqslant1-\delta$ выполняется неравенство
+	\begin{equation*}
+		\frac{Pf-P_nf}{\sqrt{Pf}}\leqslant2\sqrt{\frac{\ln\mathbb{S}(\mathcal{F}(X_1^{2n}))+\ln\frac{4}{\delta}}{n}}
+	\end{equation*}
+Также с вероятностью $\geqslant1-\delta$
+\begin{equation*}
+	\frac{P_nf-Pf}{\sqrt{P_nf}}\leqslant2\sqrt{\frac{\ln\mathbb{S}(\mathcal{F}(X_1^{2n}))+\ln\frac{4}{\delta}}{n}}
+\end{equation*}
+\end{theorem}
+\section{Приложения к минимизации эмпирического риска}
+Если неотрицательные числа $a$,$b$,$c$ удовлетворяют неравенству $a\leqslant b\sqrt{a}+c$, то они удовлетворяют неравенству $a\leqslant b^2+b\sqrt{c}+c$, поэтому, учитывая теорему $\ref{thScaledEstimate}$, для любого $\delta\in(0,1)$ с вероятностью $\geqslant1-\delta$ имеем
+\begin{equation*}
+	Pf\leqslant P_nf+2\sqrt{P_nf\cdot\frac{\ln\mathbb{S}(\mathcal{F}(X_1^{2n}))+\ln\frac{4}{\delta}}{n}}+4\cdot\frac{\ln\mathbb{S}(\mathcal{F}(X_1^{2n}))+\ln\frac{4}{\delta}}{n}
+\end{equation*}
+\begin{corollary}\label{crRiskMinimizer}
+	Пусть $g_n^*$ --- минимизатор эмпирического риска в классе $\mathcal{C}$, имеющем VC-размерность $V$, тогда для любого $\delta\in(0,1)$ с вероятностью $\geqslant1-\delta$ выполняется неравенство
+	\begin{equation*}
+		L(g_n^*)\leqslant L_n(g_n^*)+2\sqrt{\frac{2V\ln(n+1)+\ln\frac{4}{\delta}}{n}}+4\cdot\frac{2V\ln(n+1)+\ln\frac{4}{\delta}}{n}
+	\end{equation*}
+\end{corollary}
+
+Рассмотрим крайний случай, когда класс $\mathcal{C}$ содержит безошибочный классификатор. Это также означает, что существует $g'\in\mathcal{C}$ такой, что $\mathbb{P}\left\{g'(X)=Y\right\}=1$. Такое бывает очень редко, тем не менее, предположение $\inf\limits_{g\in\mathcal{C}}L(g)=0$ часто делается в теории вычислительного обучения, возможно из-за своей простоты. В этом случае $L_n(g_n^*)=0$ и поэтому с вероятностью $\geqslant1-\delta$
+\begin{equation*}
+	L(g_n^*)-\inf\limits_{g\in\mathcal{C}}L(g)\leqslant4\cdot\frac{2V\ln(n+1)+\ln\frac{4}{\delta}}{n}
+\end{equation*}
+
+Главное здесь то, что верхняя оценка, полученная в этом случае, имеет меньший порядок величины, чем в общем случае ($O\left(\frac{V\ln n}{n}\right)$ вместо $O\left(\sqrt{\frac{V\ln n}{n}}\right)$). На самом деле можно получить версию, которая интерполирует между этими двумя случаями следующим образом: для простоты предположим, что существует классификатор $g'\in\mathcal{C}$ такой, что $L(g')=\inf\limits_{g\in\mathcal{C}}L(g)$, тогда
+\begin{equation*}
+	L_n(g_n^*)\leqslant L_n(g')=L_n(g')-L(g')+L(g')
+\end{equation*}
+Таким образом, учитывая неравенство Бернштейна
+\begin{equation*}
+	L_n(g_n^*)-L(g')\leqslant\sqrt{\frac{2L(g')\cdot\ln\frac{1}{\delta}}{n}}+\frac{2\ln\frac{1}{\delta}}{3n}
+\end{equation*}
+и следствие $\ref{crRiskMinimizer}$, имеем
+\begin{corollary}
+	Существует $C>0$ такое, что для любого $\delta\in(0,1)$ с вероятностью $\geqslant1-\delta$ выполняется неравенство
+	\begin{equation*}
+		L(g_n^*)-\inf\limits_{g\in\mathcal{C}}L(g)\leqslant C\cdot\left(\sqrt{\inf\limits_{g\in\mathcal{C}}L(g)\cdot\frac{V\ln n+\ln\frac{1}{\delta}}{n}}+\frac{V\ln n+\ln\frac{1}{\delta}}{n}\right)
+	\end{equation*}
+\end{corollary}
+\begin{remark}
+	Если заменить в определении сложности Радемахера случайные величины Радемахера на случайные величины $\mathcal{N}(0,1)$, то получится величина, называемая \textbf{гауссовской сложностью}.
+\end{remark}
+\end{document}

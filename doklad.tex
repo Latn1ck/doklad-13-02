@@ -139,7 +139,7 @@ P_n'f:=\frac{1}{n}\sum\limits_{i=1}^{n}f(X_i'),
 
 Пусть $A\subset\mathbb{R}^n$ --- ограниченное, $a=(a_1,\dots, a_n)\in A$. \textbf{Сложность Радемахера} по множеству $A$:
 \begin{equation*}
-R_n(A):=\mathbb{E}\sup\limits_{a\in A}\frac{1}{n}\left|\sum\limits_{i=1}^{n}\sigma_ia_i\right|
+R_n(A):=\mathbb{E}\sup\limits_{a\in A}\frac{1}{n}\left[\sum\limits_{i=1}^{n}\sigma_ia_i\right]
 \end{equation*}
 
 Для заданного набора точек $x_1$, $\dots$, $x_n\in\mathcal{X}$ обозначим
@@ -210,7 +210,7 @@ $\|\cdot\|$ --- евклидова норма.
 \end{equation*}
 Отсюда вытекает, что
 \begin{equation*}
-	e^{s\cdot R_n(A)}=\exp\left[s\cdot\mathbb{E}\max\limits_{1\leqslant j\leqslant N}\frac{1}{n}\left|\sum\limits_{i=1}^{n}\sigma_ia_i^{(j)}\right|\right]\leqslant\mathbb{E} \exp\left[s\cdot\max\limits_{1\leqslant j\leqslant N}\frac{1}{n}\left|\sum\limits_{i=1}^{n}\sigma_ia_i^{(j)}\right|\right]\leqslant
+	e^{s\cdot R_n(A)}=\exp\left[s\cdot\mathbb{E}\max\limits_{1\leqslant j\leqslant N}\frac{1}{n}\sum\limits_{i=1}^{n}\sigma_ia_i^{(j)}\right]\leqslant\mathbb{E} \exp\left[s\cdot\max\limits_{1\leqslant j\leqslant N}\frac{1}{n}\sum\limits_{i=1}^{n}\sigma_ia_i^{(j)}\right]\leqslant
 \end{equation*}
 \begin{equation*}
 	\leqslant\sum\limits_{j=1}^{N}\mathbb{E}e^{\frac{s}{n}\cdot\sum\limits_{i=1}^{n}\sigma_ia_i^{(j)}}\leqslant N\cdot\max\limits_{1\leqslant j\leqslant N} e^{\frac{s^2\cdot\|a^{(j)}\|^2}{2n^2}}
@@ -219,11 +219,24 @@ $\|\cdot\|$ --- евклидова норма.
 	e^{s\cdot R_n(A)}\leqslant N\cdot\max\limits_{1\leqslant j\leqslant N} e^{\frac{s^2\cdot\|a^{(j)}\|^2}{2n^2}}
 \end{equation*}
 \begin{equation*}
-	s\cdot R_n(A)\leqslant \ln N\cdot\max\limits_{1\leqslant j\leqslant N}\frac{s^2\cdot\|a^{(j)}\|^2}{2n^2}
+	e^{s\cdot R_n(A)}\leqslant N\cdot\exp\left[\frac{s^2}{2n^2}\cdot\left(\max\limits_{1\leqslant j\leqslant N}\|a^{(j)}\|\right)^2\right]
 \end{equation*}
 \begin{equation*}
-	R_n(A)\leqslant\frac{s\ln N}{2n^2}\cdot\max\limits_{1\leqslant j\leqslant N}\|a^{(j)}\|^2
+	s\cdot R_n(A)\leqslant\ln N+\frac{s^2}{2n^2}\cdot\left(\max\limits_{1\leqslant j\leqslant N}\|a^{(j)}\|\right)^2
 \end{equation*}
+\begin{equation*}
+	R_n(A)\leqslant\frac{\ln N}{s}+\frac{s}{2n^2}\cdot\left(\max\limits_{1\leqslant j\leqslant N}\|a^{(j)}\|\right)^2 \quad \forall\, s>0
+\end{equation*}
+Так как
+\begin{equation*}
+	\frac{\ln N}{s}+\frac{s}{2n^2}\cdot\left(\max\limits_{1\leqslant j\leqslant N}\|a^{(j)}\|\right)^2\geqslant2\sqrt{\frac{\ln N}{s}\cdot\frac{s}{2n^2}\cdot\left(\max\limits_{1\leqslant j\leqslant N}\|a^{(j)}\|\right)^2}=\max\limits_{1\leqslant j\leqslant N}\|a^{(j)}\|\cdot\frac{\sqrt{2\ln N}}{n},
+\end{equation*}
+то
+\begin{equation*}
+	R_n(A)\leqslant\max\limits_{1\leqslant j\leqslant N}\|a^{(j)}\|\cdot\frac{\sqrt{2\ln N}}{n}
+\end{equation*}
+Свойство доказано.
+
 Рассмотрим случай, когда класс $\mathcal{F}$ состоит только из функций-индикаторов. Тогда для любого набора точек $x_1^n=(x_1,\dots,x_n)$ множество $\mathcal{F}(x_1^n)$ конечно, его мощность $\mathbb{S}_{\mathcal{F}}(x_1^n)\leqslant2^n$ и по свойству $\eqref{eqProperty4}$
 \begin{equation}\label{eqRademacherVCInequality}
 	R_n(\mathcal{F}(x_1^n))\leqslant\sqrt{\frac{2\ln\mathbb{S}_{\mathcal{F}}(x_1^n)}{n}},
@@ -232,7 +245,7 @@ $\|\cdot\|$ --- евклидова норма.
 \begin{equation*}
 	\mathbb{E}\sup\limits_{f\in\mathcal{F}}|Pf-P_nf|\leqslant2\mathbb{E}\sqrt{\frac{2\ln\mathbb{S}_{\mathcal{F}}(x_1^n)}{n}}
 \end{equation*}
-Величина $\mathbb{S}_{\mathcal{F}}(x_1^n)$ называется \textbf{коэффициентом разбиения Вапника-Червоненкиса}, а её логарифм называется \textbf{размерностью Вапника-Червоненкиса}.
+Величина $\mathbb{S}_{\mathcal{F}}(x_1^n)$ называется \textbf{коэффициентом разбиения Вапника-Червоненкиса}. Её логарифм может быть ограничен сверху \textbf{размерностью Вапника-Червоненкиса}.
 
 Если $A\subset\{-1,1\}^n$, то размерность Вапника-Червоненкиса --- это размер $V$ наибольшего множества индексов $\{i_1,\dots, i_V\}\subset\{1,\dots,n\}$ такого, что для любого вектора $b\in\{-1,1\}^n$ найдётся вектор $a=(a_1,\dots, a_n)\in A$ такой, что $(a_{i_1}, \dots, a_{i_V})=b$.
 
@@ -273,7 +286,7 @@ $\|\cdot\|$ --- евклидова норма.
 \end{enumerate}
 Рассмотрим детальнее вторую проблему для случая полупространств. Пусть дана выборка $(x_1,\dots, x_n)$ из $\mathbb{R}^d$ и пусть дан набор меток $(y_1,\dots, y_n)\in\{-1,1\}^n$. Чтобы минимизировать эмпирический риск мисклассификации, необходимо найти $w\in\mathbb{R}^d$ и $b\in\mathbb{R}$ такие, что
 \begin{equation*}
-	\left|\left\{k:y_k\cdot(\langle w,x_k\rangle-b) \leqslant0\right\}\right|\to\min
+	\#\left\{k:y_k\cdot(\langle w,x_k\rangle-b) \leqslant0\right\}\to\min
 \end{equation*}
 Предположим, не ограничивая общности, что векторы имеют рациональные координаты, и что размер данных это сумма битовых длин векторов, образующих выборку, тогда не только минимизация, но и приближённая минимизация количества ошибок имеет сложность NP. Если P=NP, то мы не сможем построить вычислительно эффективный алгоритм, который будет работать хорошо для любой размерности $d$. Если $d$ зафиксировано, то алгоритм работает за $O(n^{d-1}\ln n)$
 \subsection{Margin}
@@ -390,7 +403,7 @@ $\|\cdot\|$ --- евклидова норма.
 \end{equation*}
 может быть дополнено до гильбертова пространства.
 
-Ключевое свойство заключается в том, что для любых $x_1$, $x_2\in\mathcal{X}$ существуют $f_{x_1}$, $f_{x_2}\in\mathcal{X}$ такие, что $\langle f_{x_1},f_{x_2}\rangle=k(x_1,x_2)$. Это означает, что любой линейный алгоритм, использующий скалярное произведение, можен быть расширен до нелинейного алгоритма с помощью замены скалярного произведения на ядро. Преимущество состоит в том, что, несмотря на низкую сложность алгоритма, он работает в классе функций, которые потенциально могут сколь угодно хорошо представлять любую непрерывную функцию (при условии, что k выбрано соответствующим образом).
+Ключевое свойство заключается в том, что для любых $x_1$, $x_2\in\mathcal{X}$ существуют $f_{x_1}$, $f_{x_2}\in\mathcal{X}$ такие, что $\langle f_{x_1},f_{x_2}\rangle=k(x_1,x_2)$. Это означает, что любой линейный алгоритм, использующий скалярное произведение, можен быть расширен до нелинейного алгоритма с помощью замены скалярного произведения на ядро. Преимущество состоит в том, что, несмотря на низкую сложность алгоритма, он работает в классе функций, которые потенциально могут сколь угодно хорошо представлять любую непрерывную функцию (при условии, что $k$ выбрано соответствующим образом).
 
 Алгоритмы, работающие с ядрами, обычно выполняют минимизацию функционала стоимости на шаре соответствующего воспроизводящего ядра гильбертова пространства вида
 \begin{equation*}

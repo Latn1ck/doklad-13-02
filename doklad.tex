@@ -92,11 +92,15 @@ $L_n(g)$ --- \textbf{эмпирическая ошибка} классифика
 
 Мы видим, что если отклонение $\sup\limits_{g\in\mathcal{C}}|L_n(g)-L(g)|$ невелико, то мы можем сделать вывод, что вероятность ошибки выбранного классификатора не намного превышает вероятность ошибки лучшего классификатора в классе $\mathcal{C}$, и в то же время эмпирическая оценка $L_n(g_n^*)$ тоже хорошая.
 
-Так как $nL_n(g)\sim Bi(n,L(g))$, то следует изучать отклонения биномиальных случайных величин от их математического ожидания. Сформулируем задачу более общо: пусть $X_1$, $dots$, $X_n$ --- i. i. d. случайные величины со значениями в некотором множестве $\mathscr{X}$ и $\mathcal{F}$ --- класс функций $f:\mathscr{X}\to[-1,1]$. Обозначим
+Так как $nL_n(g)\sim Bi(n,L(g))$, то следует изучать отклонения биномиальных случайных величин от их математического ожидания. Сформулируем задачу более общо: пусть
+
+\noindent$X_1$, $\dots$, $X_n$ --- i. i. d. случайные величины со значениями в некотором множестве $\mathscr{X}$ и
+
+\noindent $\mathcal{F}$ --- класс функций $f:\mathscr{X}\to[-1,1]$. Обозначим
 \begin{equation*}
 	Pf:=Ef(X_1), \quad P_nf:=\frac{1}{n}\sum\limits_{i=1}^{n}f(X_i)
 \end{equation*}
-и рассмотрим $\sup\limits_{f\in\mathcal{F}}|Pf-P_nf|$.
+и рассмотрим $\sup\limits_{f\in\mathcal{F}}(Pf-P_nf)$.
 \begin{theorem}[неравенство ограниченных разностей]\label{thBoundedDifferences}
 	Пусть $g:\mathscr{X}^n\to\mathbb{R}$ и существуют $c_1$, $\dots$, $c_n\in\mathbb{R}$ такие, что
 	\begin{equation*}
@@ -108,38 +112,39 @@ $L_n(g)$ --- \textbf{эмпирическая ошибка} классифика
 	\end{equation*}
 	удовлетворяет неравенству
 	\begin{equation*}
-		\mathbb{P}\left\{|Z-\mathbb{E}Z|>t\right\}\leqslant2e^{-\frac{2t^2}{C}}, \quad C=\sum\limits_{i=1}^{n}c_i^2
+		\mathbb{P}\left\{Z-\mathbb{E}Z>t\right\}\leqslant e^{-\frac{2t^2}{C}}, \quad C=\sum\limits_{i=1}^{n}c_i^2
 	\end{equation*}
+(\textbf{оно же неравенство МакДиармида}).
 \end{theorem}
 
 Заметим, что случайная величина
 \begin{equation*}
-	Z=\sup\limits_{f\in\mathcal{F}}|Pf-P_nf|
+	Z=\sup\limits_{f\in\mathcal{F}}(Pf-P_nf)
 \end{equation*}
 удовлетворяет условиям теоремы \ref{thBoundedDifferences} с константами $c_i=\dfrac{2}{n}$ и, более того, для любого $\delta\in(0,1)$ с вероятностью $\geqslant1-\delta$:
 \begin{equation*}
-	\sup\limits_{f\in\mathcal{F}}|Pf-P_nf|\leqslant\mathbb{E}\sup\limits_{f\in\mathcal{F}}|Pf-P_nf|+\sqrt{\frac{2\ln\frac{1}{\delta}}{n}}
+	\sup\limits_{f\in\mathcal{F}}(Pf-P_nf)\leqslant\mathbb{E}\sup\limits_{f\in\mathcal{F}}(Pf-P_nf)+\sqrt{\frac{2\ln\frac{1}{\delta}}{n}}
 \end{equation*}
 
-Последнее неравенство позволяет сконцентрироваться на математическом ожидании, которое можно оценить сверху с помощью сииметризации. Обозначим $X_1'$, $\dots$, $X_n'$ --- призрачная выборка, состоящая из независимых случайных величин, которые также являеются независимыми с $X_i$,
+Последнее неравенство позволяет сконцентрироваться на математическом ожидании, которое можно оценить сверху с помощью симметризации. Обозначим $X_1'$, $\dots$, $X_n'$ --- <<призрачная>> выборка, состоящая из независимых случайных величин, которые также являеются независимыми с $X_i$, распределение которых совпадает с $X_i$.
 \begin{equation*}
 P_n'f:=\frac{1}{n}\sum\limits_{i=1}^{n}f(X_i'),
 \end{equation*}
-тогда по неравенству Йенсена
+тогда 
 \begin{equation*}
-\mathbb{E}\sup\limits_{f\in\mathcal{F}}|Pf-P_nf|\leqslant\mathbb{E}\sup\limits_{f\in\mathcal{F}}\left(\mathbb{E}\left[|P_n'f-P_nf|\bigg| X_1,\dots, X_n\right]\right)\leqslant\mathbb{E}\sup\limits_{f\in\mathcal{F}}|P_n'f-P_nf|
+\mathbb{E}\sup\limits_{f\in\mathcal{F}}(Pf-P_nf)\leqslant\mathbb{E}\sup\limits_{f\in\mathcal{F}}\left(\mathbb{E}\left[(P_n'f-P_nf)\bigg| X_1,\dots, X_n\right]\right)\leqslant\mathbb{E}\sup\limits_{f\in\mathcal{F}}(P_n'f-P_nf)
 \end{equation*}
 Обозначим $\sigma_1$, $\dots$, $\sigma_n$ --- независимые случайные величины Радемахера, $\mathbb{P}\left\{\sigma_i=-1\right\}=\mathbb{P}\left\{\sigma_i=1\right\}=\dfrac{1}{2}$, тогда
 \begin{equation*}
-\mathbb{E}\sup\limits_{f\in\mathcal{F}}|P_n'f-P_nf|=\mathbb{E}\left[\sup\limits_{f\in\mathcal{F}}\left|\frac{1}{n}\sum\limits_{i=1}^{n}(f(X_i')-f(X_i))\right|\right]=\mathbb{E}\left[\sup\limits_{f\in\mathcal{F}}\left|\frac{1}{n}\sum\limits_{i=1}^{n}\sigma_i(f(X_i')-f(X_i))\right|\right]\leqslant
+\mathbb{E}\sup\limits_{f\in\mathcal{F}}(P_n'f-P_nf)=\mathbb{E}\left[\sup\limits_{f\in\mathcal{F}}\left(\frac{1}{n}\sum\limits_{i=1}^{n}(f(X_i')-f(X_i))\right)\right]=\mathbb{E}\left[\sup\limits_{f\in\mathcal{F}}\left(\frac{1}{n}\sum\limits_{i=1}^{n}\sigma_i(f(X_i')-f(X_i))\right)\right]\leqslant
 \end{equation*}
 \begin{equation*}
-\leqslant2\mathbb{E}\left[\sup\limits_{f\in\mathcal{F}}\frac{1}{n}\left|\sum\limits_{i=1}^{n}\sigma_if(X_i)\right|\right]
+\leqslant2\mathbb{E}\left[\sup\limits_{f\in\mathcal{F}}\frac{1}{n}\sum\limits_{i=1}^{n}\sigma_if(X_i)\right]
 \end{equation*}
 
 Пусть $A\subset\mathbb{R}^n$ --- ограниченное, $a=(a_1,\dots, a_n)\in A$. \textbf{Сложность Радемахера} по множеству $A$:
 \begin{equation*}
-R_n(A):=\mathbb{E}\sup\limits_{a\in A}\frac{1}{n}\left[\sum\limits_{i=1}^{n}\sigma_ia_i\right]
+R_n(A):=\mathbb{E}\left[\sup\limits_{a\in A}\frac{1}{n}\sum\limits_{i=1}^{n}\sigma_ia_i\right]
 \end{equation*}
 
 Для заданного набора точек $x_1$, $\dots$, $x_n\in\mathcal{X}$ обозначим
@@ -149,11 +154,11 @@ R_n(A):=\mathbb{E}\sup\limits_{a\in A}\frac{1}{n}\left[\sum\limits_{i=1}^{n}\sig
 \begin{theorem}
 Для любого $\delta\in(0,1)$ с вероятностью $\geqslant1-\delta$
 \begin{equation*}
-	\sup\limits_{f\in\mathcal{F}}|Pf-P_nf|\leqslant2\mathbb{E}R_n(\mathcal{F}(x_1^n))+\sqrt{\frac{2\ln\frac{1}{\delta}}{n}}
+	\sup\limits_{f\in\mathcal{F}}(Pf-P_nf)\leqslant2\mathbb{E}R_n(\mathcal{F}(x_1^n))+\sqrt{\frac{2\ln\frac{1}{\delta}}{n}}
 \end{equation*}
 Также с вероятностью $\geqslant1-\delta$
 \begin{equation}\label{eqFirstDataBasedEstimate}
-\sup\limits_{f\in\mathcal{F}}|Pf-P_nf|\leqslant2R_n(\mathcal{F}(x_1^n))+\sqrt{\frac{2\ln\frac{2}{\delta}}{n}}
+\sup\limits_{f\in\mathcal{F}}(Pf-P_nf)\leqslant2R_n(\mathcal{F}(x_1^n))+\sqrt{\frac{2\ln\frac{2}{\delta}}{n}}
 \end{equation}
 \end{theorem}
 Второе неравенство вытекает из того факта, что случайная величина $R_n(\mathcal{F}(x_1^n))$ удовлетворяет теореме $\ref{thBoundedDifferences}$. Также это неравенство является нашей первой оценкой, основанной на данных.
@@ -162,7 +167,7 @@ R_n(A):=\mathbb{E}\sup\limits_{a\in A}\frac{1}{n}\left[\sum\limits_{i=1}^{n}\sig
 
 Введена Владимиром Кольчинским и Дмитрием Панченко в 1999 году.
 \begin{theorem}[Свойства средних Радемахера]\label{thProperties}
-Пусть $A$, $B\subset\mathbb{R}^n$ --- ограниченные, $c\in\mathbb{R}$, тогда
+Пусть $A$, $B\subset\mathbb{R}^n$ --- ограниченные, $c\in\mathbb{R}$, $b\in\mathbb{R}^n$, тогда
 \begin{enumerate}
 	\item\label{eqProperty1}
 	\begin{equation*}
@@ -174,7 +179,7 @@ R_n(A):=\mathbb{E}\sup\limits_{a\in A}\frac{1}{n}\left[\sum\limits_{i=1}^{n}\sig
 	\end{equation*}
 	\item\label{eqProperty3}
 	\begin{equation*}
-		R_n(A+b)=R_n(A), \quad b\in\mathbb{R}^n
+		R_n(A+b)=R_n(A)
 	\end{equation*}
 	\item\label{eqProperty4}
 	\begin{equation*}
@@ -200,11 +205,14 @@ $\|\cdot\|$ --- евклидова норма.
 \begin{equation*}
 	\operatorname{absconv}A=\left\{\sum\limits_{j=1}^{N}c_ja_j: N\in\mathbb{N}, c_j\in\mathbb{R}, \sum\limits_{j=1}^{N}|c_j|\leqslant1, a_j\in A\right\},
 \end{equation*}
-то $R_n(\operatorname{absconv}A)=R_n(A)$.
+\begin{equation*}
+	\operatorname{conv}A=\left\{\sum\limits_{j=1}^{N}c_ja_j: N\in\mathbb{N}, c_j\geqslant0, \sum\limits_{j=1}^{N}c_j\leqslant1, a_j\in A\right\},
+\end{equation*}
+то $R_n(\operatorname{absconv}A)=R_n(\operatorname{conv} A)=R_n(A)$.
 \end{enumerate}
 \end{theorem}
 
-\textbf{Доказательство свойства \eqref{eqProperty4}}.  Вытекает из неравенства Хёфдинга, которое утверждает, что если ограниченная случайная величина $\xi$ имеет нулевое математическое ожидание и принимает значения на $[\alpha,\beta]$, то для любого $s>0$
+\textbf{Доказательство свойства \eqref{eqProperty5}}.  Вытекает из неравенства Хёфдинга, которое утверждает, что если ограниченная случайная величина $\xi$ имеет нулевое математическое ожидание и принимает значения на $[\alpha,\beta]$, то для любого $s>0$
 \begin{equation*}
 	\mathbb{E}e^{s\xi}\leqslant e^{\frac{s^2\cdot(\beta-\alpha)^2}{8}}
 \end{equation*}
@@ -241,19 +249,17 @@ $\|\cdot\|$ --- евклидова норма.
 \end{equation*}
 Свойство доказано.
 
-Рассмотрим случай, когда класс $\mathcal{F}$ состоит только из функций-индикаторов. Тогда для любого набора точек $x_1^n=(x_1,\dots,x_n)$ множество $\mathcal{F}(x_1^n)$ конечно, его мощность $\mathbb{S}_{\mathcal{F}}(x_1^n)\leqslant2^n$ и по свойству $\eqref{eqProperty4}$
+Рассмотрим случай, когда класс $\mathcal{F}$ состоит только из функций-индикаторов. Тогда для любого набора точек $x_1^n=(x_1,\dots,x_n)$ множество $\mathcal{F}(x_1^n)$ конечно, его мощность $\mathbb{S}_{\mathcal{F}}(x_1^n)\leqslant2^n$ и по свойству $\eqref{eqProperty5}$
 \begin{equation}\label{eqRademacherVCInequality}
 	R_n(\mathcal{F}(x_1^n))\leqslant\sqrt{\frac{2\ln\mathbb{S}_{\mathcal{F}}(x_1^n)}{n}},
 \end{equation}
 В частности,
 \begin{equation*}
-	\mathbb{E}\sup\limits_{f\in\mathcal{F}}|Pf-P_nf|\leqslant2\mathbb{E}\sqrt{\frac{2\ln\mathbb{S}_{\mathcal{F}}(x_1^n)}{n}}
+	\mathbb{E}\sup\limits_{f\in\mathcal{F}}(Pf-P_nf)\leqslant2\mathbb{E}\sqrt{\frac{2\ln\mathbb{S}_{\mathcal{F}}(x_1^n)}{n}}
 \end{equation*}
 Величина $\mathbb{S}_{\mathcal{F}}(x_1^n)$ называется \textbf{коэффициентом разбиения Вапника-Червоненкиса}. Её логарифм может быть ограничен сверху \textbf{размерностью Вапника-Червоненкиса}.
 
-Если $A\subset\{-1,1\}^n$, то размерность Вапника-Червоненкиса --- это размер $V$ наибольшего множества индексов $\{i_1,\dots, i_V\}\subset\{1,\dots,n\}$ такого, что для любого вектора $b\in\{-1,1\}^n$ найдётся вектор $a=(a_1,\dots, a_n)\in A$ такой, что $(a_{i_1}, \dots, a_{i_V})=b$.
-
-Иными словами, VC-размерность класса $\mathcal{F}$ --- это наибольшее число $h$ такое, что найдётся подмножество мощности $h$ такое, что функции из $\mathcal{F}$ смогут разбить его на два класса всеми возможными способами.
+VC-размерность класса $\mathcal{F}$ --- это наибольшее число $h$ такое, что найдётся подмножество мощности $h$ такое, что функции из $\mathcal{F}$ смогут разбить его на два класса всеми возможными способами.
 
 Связь между VC-коэффициентом разбиения и VC-размерностью устанавливает лемма Сауэра, которая утверждает, что если $A\subset\{-1,1\}^n$, то
 \begin{equation*}
@@ -265,7 +271,7 @@ $\|\cdot\|$ --- евклидова норма.
 \end{equation*}
 где $V(x_1^n)$ --- VC-размерность $\mathcal{F}(x_1^n)$. Поэтому
 \begin{equation*}
-	\mathbb{E}\sup\limits_{f\in\mathcal{F}}|Pf-P_nf|\leqslant2\mathbb{E}\sqrt{\frac{2V(X_1^n)\cdot\ln(n+1)}{n}}
+	\mathbb{E}\sup\limits_{f\in\mathcal{F}}(Pf-P_nf)\leqslant2\mathbb{E}\sqrt{\frac{2V(X_1^n)\cdot\ln(n+1)}{n}}
 \end{equation*}
 
 Чтобы получить оценку, не зависящую от распределения, введём VC-размерность класса бинарных функций $\mathcal{F}$:
@@ -275,14 +281,14 @@ $\|\cdot\|$ --- евклидова норма.
 \begin{theorem}[неравенство Вапника-Червоненкиса]
 	Для любого распределения выполняется неравенство
 	\begin{equation*}
-		\mathbb{E}\sup\limits_{f\in\mathcal{F}}|Pf-P_nf|\leqslant2\sqrt{\frac{2V\cdot\ln(n+1)}{n}}
+		\mathbb{E}\sup\limits_{f\in\mathcal{F}}(Pf-P_nf)\leqslant2\sqrt{\frac{2V\cdot\ln(n+1)}{n}}
 	\end{equation*}
 	Также существует $C>0$, что
 	\begin{equation*}
-		\mathbb{E}\sup\limits_{f\in\mathcal{F}}|Pf-P_nf|\leqslant C\cdot\sqrt{\frac{V}{n}}
+		\mathbb{E}\sup\limits_{f\in\mathcal{F}}(Pf-P_nf)\leqslant C\cdot\sqrt{\frac{V}{n}}
 	\end{equation*}
 \end{theorem}
-\section{Примеры}
+\section{Примеры вычисления}
 \begin{example}
 	\begin{equation*}
 		A=\{(a,b)\}
@@ -331,7 +337,7 @@ $\|\cdot\|$ --- евклидова норма.
 \section{Минимизация функций штрафа}
 Показано, что минимизация эмпирического риска $L_n(g)$ в классе $\mathcal{C}$ классификаторов с VC-размерностью, намного меньшей, чем размер выборки $n$, гарантированно будет работать хорошо. Но здесь возникают две проблемы:
 \begin{enumerate}
-	\item Если потребовать, чтобы VC-размерность была малой, то накладываются серьезные ограничения на аппроксимационные свойства класса. В частности, несмотря на то, что величина  $|L(g_n)-\inf\limits_{g\in\mathcal{C}}L(g)|$ может быть маленькой, величина $\inf\limits_{g\in\mathcal{C}}L(g)-L^*$ может быть очень большой. 
+	\item Если потребовать, чтобы VC-размерность была малой, то накладываются серьезные ограничения на аппроксимационные свойства класса. В частности, несмотря на то, что величина  $(L(g_n)-\inf\limits_{g\in\mathcal{C}}L(g))$ может быть маленькой, величина $\inf\limits_{g\in\mathcal{C}}L(g)-L^*$ может быть очень большой. 
 	\item Минимизация эмпирической вероятности $L(g)$ очень часто является вычислительно сложной задачей.
 \end{enumerate}
 Рассмотрим детальнее вторую проблему для случая полупространств. Пусть дана выборка $(x_1,\dots, x_n)$ из $\mathbb{R}^d$ и пусть дан набор меток $(y_1,\dots, y_n)\in\{-1,1\}^n$. Чтобы минимизировать эмпирический риск мисклассификации, необходимо найти $w\in\mathbb{R}^d$ и $b\in\mathbb{R}$ такие, что
@@ -371,7 +377,7 @@ $\|\cdot\|$ --- евклидова норма.
 	Таким образом, сложность Радемахера класса вещественнозначных функций ограничивает качество классификатора.
 \end{theorem}
 
-\textbf{Доказательство}. Обозначим $\mathcal{H}$ --- класс функций $\mathcal{X}\times\{-1,1\}\to\mathbb{R}$ вида $-f(x)y$, где $f\in\mathcal{F}$, тогда учитывая свойство $\eqref{eqProperty5}$ теоремы $\ref{thProperties}$, имеем
+\textbf{Доказательство}. Обозначим $\mathcal{H}$ --- класс функций $\mathcal{X}\times\{-1,1\}\to\mathbb{R}$ вида $-f(x)y$, где $f\in\mathcal{F}$, тогда учитывая свойство $\eqref{eqProperty6}$ теоремы $\ref{thProperties}$, имеем
 \begin{equation*}
 	L(f_n)\leqslant A(f_n)\leqslant A_n(f_n)+\sup\limits_{f\in\mathcal{F}}(A(f_n)-A_n(f_n))\leqslant A(f_n)+\mathbb{E}R_n(\varphi\circ\mathcal{H}(Z_1^n))+B\cdot\sqrt{\frac{2\ln\frac{1}{\delta}}{n}}\leqslant
 \end{equation*}
@@ -387,7 +393,7 @@ $\|\cdot\|$ --- евклидова норма.
 где $\mathcal{C}$ --- класс \textbf{основных} классификаторов, то есть функций $g:\mathcal{X}\to\{-1,1\}$. Классификатор такого вида можно рассматривать как классификатор, который при наблюдении $x$ принимает решение на основании взвешенного голосования классификаторов $g_1$, $\dots$, $g_N$, используя
 веса $c_1$, $\dots$, $c_N$, и принимает решения согласно взвешенному большинству.
 
-В этой случае, учитывая $\eqref{eqProperty6}$ и $\eqref{eqRademacherVCInequality}$, имеем
+В этой случае, учитывая свойство $\eqref{eqProperty7}$ и неравенство $\eqref{eqRademacherVCInequality}$, имеем
 \begin{equation*}
 	R_n(\mathcal{F}_\lambda(X_1^n))\leqslant\lambda\cdot R_n(\mathcal{C}(X_1^n))\leqslant\lambda\cdot\sqrt{\frac{2V_\mathcal{C}\cdot\ln(n+1)}{n}},
 \end{equation*}
@@ -399,8 +405,8 @@ $\|\cdot\|$ --- евклидова норма.
 \end{equation*}
 тогда $V_\mathcal{C}=1$ и замыкание $\mathcal{F}_\lambda$ по норме $L^\infty$ есть множество всех функций с полной вариацией $\leqslant2\lambda$. Поэтому $\mathcal{F}_\lambda$ богат в том смысле, что любой классификатор может быть приближен классификаторами, связанными с функциями из $\mathcal{F}_\lambda$. В частности, VC-размерность класса всех классификаторов, индуцированных функциями из $\mathcal{F}_\lambda$, бесконечна.
 
-Подводя итог, мы получили, что если $F_\lambda$ имеет указанный выше вид, то для любой выбранной функции $f_n$
-из $F_\lambda$ на основе данных, вероятность ошибки соответствующего классификатора удовлетворяет с вероятностью $\geqslant1-\delta$ неравенству
+Подводя итог, мы получили, что если $\mathcal{F}_\lambda$ имеет указанный выше вид, то для любой выбранной функции $f_n$
+из $\mathcal{F}_\lambda$ на основе данных, вероятность ошибки соответствующего классификатора удовлетворяет с вероятностью $\geqslant1-\delta$ неравенству
 \begin{equation*}
 	L(f_n)\leqslant A_n(f_n)+L_\varphi\cdot\lambda\sqrt{\frac{2V_\mathcal{C}\cdot\ln(n+1)}{n}}+B\cdot\sqrt{\frac{2\ln\frac{1}{\delta}}{n}}
 \end{equation*}
@@ -416,7 +422,7 @@ $\|\cdot\|$ --- евклидова норма.
 \end{equation*}
 В этом случае $B=1$, $L_\varphi=\dfrac{1}{\gamma}$. Также заметим, что $I_{\{x\geqslant0\}}\leqslant\varphi(x)\leqslant I_{\{x\geqslant-\gamma\}}$, и поэтому $A_n(f)\leqslant L_n^\gamma(f)$, где $L_n^\gamma(f)$ --- \textbf{ошибка с отступом}:
 \begin{equation*}
-	L_n^\gamma(f):=\frac{1}{n}\sum\limits_{i=1}^{n}I_{\{f(X_i)Y_i<=\gamma\}}
+	L_n^\gamma(f):=\frac{1}{n}\sum\limits_{i=1}^{n}I_{\{f(X_i)Y_i<\gamma\}}
 \end{equation*}
 Заметим, что для любого $\gamma>0$ $L_n(f)\leqslant L_n^\gamma(f)$, а также $L_n^\gamma(f)$ возрастает по $\gamma$.
 
@@ -455,7 +461,7 @@ $\|\cdot\|$ --- евклидова норма.
 
 Ключевое свойство заключается в том, что для любых $x_1$, $x_2\in\mathcal{X}$ существуют $f_{x_1}$, $f_{x_2}\in\mathcal{X}$ такие, что $\langle f_{x_1},f_{x_2}\rangle=k(x_1,x_2)$. Это означает, что любой линейный алгоритм, использующий скалярное произведение, можен быть расширен до нелинейного алгоритма с помощью замены скалярного произведения на ядро. Преимущество состоит в том, что, несмотря на низкую сложность алгоритма, он работает в классе функций, которые потенциально могут сколь угодно хорошо представлять любую непрерывную функцию (при условии, что $k$ выбрано соответствующим образом).
 
-Алгоритмы, работающие с ядрами, обычно выполняют минимизацию функционала стоимости на шаре соответствующего воспроизводящего ядра гильбертова пространства вида
+Алгоритмы, работающие с ядрами, обычно выполняют минимизацию функционала штрафа на шаре соответствующего воспроизводящего ядра гильбертова пространства вида
 \begin{equation*}
 	\mathcal{F}_\lambda=\left\{f(x)=\sum\limits_{j=1}^{N}c_jk(x_j,x): N\in\mathbb{N}, c_j\in\mathbb{R}, \sum\limits_{i,j=1}^{N}c_ic_jk(x_i,x_k)\leqslant\lambda^2, x_j\in\mathcal{C}\right\},
 \end{equation*}
@@ -529,7 +535,9 @@ $\|\cdot\|$ --- евклидова норма.
 \end{equation*}
 В этом случае функция $f^*$ не только порождает байесовский классификатор, но и совпадает с ним.
 \begin{theorem}[Избыточный риск выпуклого минимизатора риска]
-	Пусть $f_n$ выбран из $\mathcal{F}_\lambda$, где $\mathcal{F}_\lambda$ определён в $\eqref{eqWeightedClasses}$, путём минимизации эмпирического функционала штрафа $A_n(f)$ с использованием экспоненциальной либо логистической функции штрафа. Тогда для любого $\delta\in(0,1)$ с вероятностью $\geqslant1-\delta$ выполняется неравенство
+	Пусть 
+	
+	\noindent$f_n$ выбран из $\mathcal{F}_\lambda$, где $\mathcal{F}_\lambda$ определён в $\eqref{eqWeightedClasses}$, путём минимизации эмпирического функционала штрафа $A_n(f)$ с использованием экспоненциальной либо логистической функции штрафа. Тогда для любого $\delta\in(0,1)$ с вероятностью $\geqslant1-\delta$ выполняется неравенство
 	\begin{equation*}
 		L(f_n)-L^*\leqslant2\cdot\left(2L_\varphi\lambda\cdot\sqrt{\frac{2V_\mathcal{C}\cdot\ln(n+1)}{n}}+B\cdot\sqrt{\frac{2\ln\frac{1}{\delta}}{n}}\right)^{\frac{1}{2}}+\sqrt{2}\cdot\left(\inf\limits_{f\in\mathcal{F}_\lambda}A(f)-A^*\right)^{\frac{1}{2}}
 	\end{equation*}
@@ -605,7 +613,4 @@ $\|\cdot\|$ --- евклидова норма.
 		L(g_n^*)-\inf\limits_{g\in\mathcal{C}}L(g)\leqslant C\cdot\left(\sqrt{\inf\limits_{g\in\mathcal{C}}L(g)\cdot\frac{V\ln n+\ln\frac{1}{\delta}}{n}}+\frac{V\ln n+\ln\frac{1}{\delta}}{n}\right)
 	\end{equation*}
 \end{corollary}
-\begin{remark}
-	Если заменить в определении сложности Радемахера случайные величины Радемахера на случайные величины $\mathcal{N}(0,1)$, то получится величина, называемая \textbf{гауссовской сложностью}.
-\end{remark}
 \end{document}

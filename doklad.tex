@@ -174,15 +174,19 @@ R_n(A):=\mathbb{E}\sup\limits_{a\in A}\frac{1}{n}\left[\sum\limits_{i=1}^{n}\sig
 	\end{equation*}
 	\item\label{eqProperty3}
 	\begin{equation*}
+		R_n(A+b)=R_n(A), \quad b\in\mathbb{R}^n
+	\end{equation*}
+	\item\label{eqProperty4}
+	\begin{equation*}
 		R_n(A+B)\leqslant R_n(A)+R_n(B)
 	\end{equation*}
-\item\label{eqProperty4}
+\item\label{eqProperty5}
 Если $A=\left\{a^{(1)},\dots, a^{(N)}\right\}$ --- конечно, то
 \begin{equation*}
 	R_n(A)\leqslant\max\limits_{1\leqslant j\leqslant N}\|a^{(j)}\|\cdot\frac{\sqrt{2\ln N}}{n},
 \end{equation*}
 $\|\cdot\|$ --- евклидова норма.
-\item\label{eqProperty5}
+\item\label{eqProperty6}
 Пусть $\varphi:\mathbb{R}\to\mathbb{R}$ --- липшицева с константой $L_\varphi$, $\varphi(0)=0$, обозначим
 \begin{equation*}
 	\varphi\circ A=\left\{(\varphi(a_1), \dots,\varphi(a_n)): a=(a_1,\dots, a_n)\in A\right\},
@@ -191,7 +195,7 @@ $\|\cdot\|$ --- евклидова норма.
 \begin{equation*}
 	R_n(\varphi\circ A)\leqslant L_\varphi\cdot R_n(A)
 \end{equation*}
-\item\label{eqProperty6}
+\item\label{eqProperty7}
 Если
 \begin{equation*}
 	\operatorname{absconv}A=\left\{\sum\limits_{j=1}^{N}c_ja_j: N\in\mathbb{N}, c_j\in\mathbb{R}, \sum\limits_{j=1}^{N}|c_j|\leqslant1, a_j\in A\right\},
@@ -278,6 +282,52 @@ $\|\cdot\|$ --- евклидова норма.
 		\mathbb{E}\sup\limits_{f\in\mathcal{F}}|Pf-P_nf|\leqslant C\cdot\sqrt{\frac{V}{n}}
 	\end{equation*}
 \end{theorem}
+\section{Примеры}
+\begin{example}
+	\begin{equation*}
+		A=\{(a,b)\}
+	\end{equation*}
+\end{example}
+\begin{equation*}
+	R_2(A)=\frac{1}{2}\cdot\mathbb{E}\left[\sigma_1 a+\sigma_2b\right]=0
+\end{equation*}
+\begin{example}
+	\begin{equation*}
+		A=\{(a_1,a_2), (b_1,b_2)\}
+	\end{equation*}
+\end{example}
+\begin{equation*}
+	R_2(A)=\frac{1}{2}\cdot\mathbb{E}\left[\max\{a_1\sigma_1+a_2\sigma_2,b_1\sigma_1+b_2\sigma_2\}\right]=
+\end{equation*}
+\begin{equation*}
+	=\frac{1}{2}\cdot\left[\frac{1}{4}\cdot\max\{a_1+a_2,b_1+b_2\}+\frac{1}{4}\cdot\max\{a_1-a_2,b_1-b_2\}+\frac{1}{4}\cdot\max\{-a_1+a_2,-b_1+b_2\}+\right.
+\end{equation*}
+\begin{equation*}
+	\left.+\frac{1}{4}\cdot\max\{-a_1-a_2,-b_1-b_2\}\right]=\frac{1}{8}\cdot\left[\max\{a_1+a_2,b_1+b_2\}-\min\{a_1+a_2,b_1+b_2\}+\right.
+\end{equation*}
+\begin{equation*}
+	\left.+\max\{a_1-a_2,b_1-b_2\}-\min\{a_1-a_2,b_1-b_2\}\right]
+\end{equation*}
+Распадается на 4 случая, в итоге
+\begin{equation*}
+	R_2(A)=\frac{1}{4}\cdot\max\left\{|b_1-a_1|,|b_2-a_2|\right\}
+\end{equation*}
+Так как $\operatorname{conv}A=\left[(a_1,a_2), (b_1,b_2)\right]$, то нашли сложность Радемахера отрезка на плоскости.
+\begin{example}
+	\begin{equation*}
+		A=\{(x,y)\in\mathbb{R}^2: x^2+y^2=1\}
+	\end{equation*}
+\end{example}
+\begin{equation*}
+	R_2(A)=\frac{1}{2}\cdot\mathbb{E}\left[\sup\limits_{x^2+y^2\leqslant 1}(\sigma_1x+\sigma_2y)\right]=\frac{1}{2}\cdot\left[\frac{1}{4}\cdot\sup\limits_{x^2+y^2\leqslant 1}(x+y)+\frac{1}{4}\cdot\sup\limits_{x^2+y^2\leqslant 1}(x-y)+\right.
+\end{equation*}
+\begin{equation*}
+	\left.+\frac{1}{4}\cdot\sup\limits_{x^2+y^2\leqslant 1}(-x+y)+\frac{1}{4}\cdot\sup\limits_{x^2+y^2\leqslant 1}(-x-y)\right]=\frac{\sqrt{2}+\sqrt{2}+\sqrt{2}+\sqrt{2}}{8}=\frac{1}{\sqrt{2}}
+\end{equation*}
+В общем случае
+\begin{equation*}
+	R_n(B[0,1])=\dfrac{1}{\sqrt{n}}, \quad R_n(B[x,r])=\dfrac{r}{\sqrt{n}}
+\end{equation*}
 \section{Минимизация функций штрафа}
 Показано, что минимизация эмпирического риска $L_n(g)$ в классе $\mathcal{C}$ классификаторов с VC-размерностью, намного меньшей, чем размер выборки $n$, гарантированно будет работать хорошо. Но здесь возникают две проблемы:
 \begin{enumerate}
